@@ -4,16 +4,26 @@ This is a demo app showing how to configure actuator security in spring boot 2.x
 
 Following urls are available:
 
-| URL                                        | Secured |
-| -------------------------------------------| --------|
-| http://localhost:8080                      |   Yes   |
-| http://localhost:8080/hello                |   Yes   |
-| http://localhost:8080/actuator/health      |   No    |
-| http://localhost:8080/actuator/info        |   No    |
-| http://localhost:8080/actuator/auditevents |   No    |
-| http://localhost:8080/actuator/env         |   Yes   |
+| URL                                               | Secured | Roles         |      
+| --------------------------------------------------| --------|----------------
+| http://localhost:8080                             |   Yes   | USER          |
+| http://localhost:8080/hello                       |   Yes   | USER          |
+| http://localhost:8080/admin                       |   Yes   | ADMIN         |
+| http://localhost:8080/actuator/health             |   No    | ---           |
+| http://localhost:8080/actuator/health (+ details) |   Yes   | MONITOR_ADMIN |
+| http://localhost:8080/actuator/info               |   No    | ---           |
+| http://localhost:8080/actuator/auditevents        |   Yes   | MONITOR_ADMIN |
+| http://localhost:8080/actuator/...                |   Yes   | USER          |
 
-User credentials for authentication are _user_ and _secret_.
+## User credentials
+
+| Username   | Password | Roles         |      
+| -----------| ---------|---------------|
+| user       |   secret | USER          |
+| admin      |   secret | USER, ADMIN   |
+| monitor    |   secret | MONITOR_ADMIN |
+
+## Example requests
 
 If you have installed [httpie](https://httpie.org/) you may try the
 following examples.
@@ -64,7 +74,7 @@ HTTP/1.1 200
 ```
 
 ```
-$ localhost:8080/actuator/auditevents
+$ localhost:8080/actuator/auditevents --auth: monitor:secret
 
 HTTP/1.1 200 
 ...
@@ -120,4 +130,3 @@ HTTP/1.1 200
      "timestamp": "2019-02-05T20:22:18.084+0000"
  }
 ```
-
